@@ -21,7 +21,7 @@ type NoteProps = React.PropsWithChildren<{
 
 function NoteCardContent({ children, note: { createdDate, content } } : NoteCardContentProps) {
   return (
-    <div className="flex gap-3 overflow-auto"
+    <div className="flex gap-3 overflow-auto">
        <span className="font-medium text-sm text-slate-300">
         { formatDistanceToNow(createdDate, { locale: ptBR, addSuffix: true })
         .replace(/^[a-z]/, e => e.toUpperCase())}
