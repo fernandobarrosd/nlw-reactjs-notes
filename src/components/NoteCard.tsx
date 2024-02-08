@@ -2,15 +2,24 @@ import * as ReactDialog from "@radix-ui/react-dialog";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Dialog } from "./Dialog";
+import { PropsWithChildren, useContext } from "react";
+import { AppContext } from "../context/AppContext";
 
-type NoteProps = React.PropsWithChildren<{
-    note: {
-      createdDate: Date
-      content: string
-    }
+type NoteCardContentProps = PropsWithChildren<{
+  note: Omit<Note, "id">
 }>
 
-function NoteCardContent({ children, note: { createdDate, content } } : NoteProps) {
+type Note = {
+  id: string
+  createdDate: Date
+  content: string
+}
+
+type NoteProps = React.PropsWithChildren<{
+    note: Note
+}>
+
+function NoteCardContent({ children, note: { createdDate, content } } : NoteCardContentProps) {
   return (
     <>
        <span className="font-medium text-sm text-slate-300">
@@ -25,7 +34,13 @@ function NoteCardContent({ children, note: { createdDate, content } } : NoteProp
   );
 }
 
-export function NoteCard({ note: { createdDate, content }  } : NoteProps) {
+export function NoteCard({ note: { id, createdDate, content }  } : NoteProps) {
+  const { deleteNote } = useContext(AppContext);
+  
+    function handleDeleteTask() {
+      deleteNote(id);
+    }
+    
     return (
         <ReactDialog.Root>
           <ReactDialog.Trigger className="bg-slate-800 relative rounded-md p-5 
@@ -44,17 +59,18 @@ export function NoteCard({ note: { createdDate, content }  } : NoteProps) {
               <Dialog.Overlay/>
               <Dialog.Content>
                 <NoteCardContent note={{ createdDate, content }}>
-                  <Dialog.CloseButton/>
-                  <button className="bg-slate-800 text-slate-300 absolute w-full 
-                  left-[0] right-[0] bottom-0 px-16 py-4 text-xs group">
+                  <Dialog.CloseButton />
+                  <ReactDialog.Close className="bg-slate-800 text-slate-300 absolute w-full 
+                  left-[0] right-[0] bottom-0 px-16 py-4 text-xs group"
+                  onClick={handleDeleteTask}>
                     Deseja 
                     <span 
                     className="text-red-400
                     group-hover:underline
                     ml-2">
-                      Apagar essa conta
+                      Apagar essa nota?
                     </span>
-                  </button>
+                  </ReactDialog.Close>
                   
                 </NoteCardContent>
               </Dialog.Content>
