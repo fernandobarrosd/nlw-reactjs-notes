@@ -5,35 +5,15 @@ import { Dialog } from "./Dialog";
 import { PropsWithChildren, useContext } from "react";
 import { AppContext } from "../context/AppContext";
 
-type NoteCardContentProps = PropsWithChildren<{
-  note: Omit<Note, "id">
-}>
-
 type Note = {
   id: string
   createdDate: Date
   content: string
 }
 
-type NoteProps = React.PropsWithChildren<{
+type NoteProps = PropsWithChildren<{
     note: Note
 }>
-
-function NoteCardContent({ children, note: { createdDate, content } } : NoteCardContentProps) {
-  return (
-    <div className="flex flex-col gap-4 overflow-auto pb-4">
-       <span className="font-medium text-sm text-slate-300">
-        { formatDistanceToNow(createdDate, { locale: ptBR, addSuffix: true })
-        .replace(/^[a-z]/, e => e.toUpperCase())}
-      </span>
-      <p className="font-medium text-xs text-slate-400 leading-6">
-        { content }
-      </p>
-      { children }
-    </div>
-  );
-}
-
 export function NoteCard({ note: { id, createdDate, content }  } : NoteProps) {
   const { deleteNote } = useContext(AppContext);
   
@@ -49,31 +29,27 @@ export function NoteCard({ note: { id, createdDate, content }  } : NoteProps) {
             text-left outline-none
             hover:ring-2 hover:ring-slate-600
             focus-visible:ring-2 focus-visible:ring-lime-400">
-              <div className="flex flex-col gap-4 overflow-auto pb-4">
-       <span className="font-medium text-sm text-slate-300">
-        { formatDistanceToNow(createdDate, { locale: ptBR, addSuffix: true })
-        .replace(/^[a-z]/, e => e.toUpperCase())}
-      </span>
-      <p className="font-medium text-xs text-slate-400 leading-6">
-        { content }
-      </p>
-      <div className="absolute bottom-0 right-0 left-0 h-1/2 bg-gradient-to-t
-    from-black/60 to-black/0 pointer-events-none"/>
-    </div>
-              
-              
+              <span className="font-medium text-sm text-slate-300">
+                  { formatDistanceToNow(createdDate, { locale: ptBR, addSuffix: true })
+                  .replace(/^[a-z]/, e => e.toUpperCase())}
+                </span>
+                <p className="font-medium text-xs text-slate-400 leading-6">
+                  { content }
+                </p>
+                <div className="absolute bottom-0 right-0 left-0 h-1/2 bg-gradient-to-t
+                 from-black/60 to-black/0 pointer-events-none"/>
             </ReactDialog.Trigger>
             <ReactDialog.Portal>
               <Dialog.Overlay/>
               <Dialog.Content>
-                <div className="flex flex-col gap-4 overflow-auto pb-4">
-       <span className="font-medium text-sm text-slate-300">
-        { formatDistanceToNow(createdDate, { locale: ptBR, addSuffix: true })
-        .replace(/^[a-z]/, e => e.toUpperCase())}
-      </span>
-      <p className="font-medium text-xs text-slate-400 leading-6">
-        { content }
-      </p>
+                <div className="flex flex-col gap-3 overflow-auto pb-10">
+                  <span className="font-medium text-sm text-slate-300">
+                    { formatDistanceToNow(createdDate, { locale: ptBR, addSuffix: true })
+                    .replace(/^[a-z]/, e => e.toUpperCase())}
+                  </span>
+                  <p className="font-medium text-xs text-slate-400 leading-6">
+                    { content }
+                  </p>
                   <Dialog.CloseButton />
                   <ReactDialog.Close className="bg-slate-800 text-slate-300 absolute w-full 
                   left-[0] right-[0] bottom-0 px-16 py-4 text-xs group"
@@ -86,8 +62,7 @@ export function NoteCard({ note: { id, createdDate, content }  } : NoteProps) {
                       Apagar essa nota?
                     </span>
                   </ReactDialog.Close>
-                  
-                </NoteCardContent>
+                </div>
               </Dialog.Content>
             </ReactDialog.Portal>
         </ReactDialog.Root>
