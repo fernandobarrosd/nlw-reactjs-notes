@@ -8,6 +8,8 @@ This is a React JS project, designed for intuitive and efficient note-taking. A 
 <br/>
 <img src="./public/screenshots/screenshot-2.png" alt="Screenshot 2">
 <br/>
+<img src="./public/screenshots/screenshot-3.png" alt="Screenshot 3">
+<br/>
 <img src="./public/screenshots/screenshot-4.png" alt="Screenshot 4">
 <br/>
 
