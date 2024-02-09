@@ -3,8 +3,7 @@ import arrowUpRightIcon from "../assets/arrow-up-right.svg";
 import { ChangeEvent, useContext, useState } from "react";
 import { Dialog } from "./Dialog";
 import { AppContext } from "../context/AppContext";
-
-
+import { toast } from "sonner";
 
 let speechRecognition : SpeechRecognition | null = null;
 
@@ -13,31 +12,42 @@ export function NewNoteCard() {
   const [ onBoardingIsVisible, setOnBoardingIsVisible ] = useState(true);
   const [ noteContent, setNoteContent ] = useState("");
   const [ isRecording, setIsRecording ] = useState(false);
-  
 
   function handleChange({ target : { value } }: ChangeEvent<HTMLTextAreaElement>) {
     if (!value) {
-    	setOnBoardingIsVisible(true);
-	setIsRecording(false);
-
+      setOnBoardingIsVisible(true);
+      setIsRecording(false);
     }
     setNoteContent(value);
   }
 
   function handleSaveNote() {
-    if (!noteContent) return;
+    if (!noteContent) {
+      toast.error("O conteúdo da nota não pode ser vazio");
+      return;
+    }
     saveNote(noteContent);
+    toast.success("Nota salva com sucesso!");
     setNoteContent("");
     setOnBoardingIsVisible(true);
   }
-
-
   
+
   function handleStartEditor() {
     setOnBoardingIsVisible(false);
   }
 
-  
+  function stop() {
+    speechRecognition?.stop();
+    setIsRecording(false);
+  }
+
+  function handleOpenChange(isOpen: boolean) {
+    if (isOpen && !noteContent) {
+      setOnBoardingIsVisible(true);
+      setIsRecording(false);
+    }
+  }
 
   function isSpeechRecognitionAPIAvailable() {
     return window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -46,7 +56,7 @@ export function NewNoteCard() {
 
   function handleStartRecording() {
     if (!isSpeechRecognitionAPIAvailable()) {
-      alert("Infelizmente o seu navegador não suporta a API de gravação de audio");
+      toast.error("Infelizmente o seu navegador não suporta a API de gravação de audio");
       return;
     }
     
@@ -66,18 +76,15 @@ export function NewNoteCard() {
       `${text}${result[0].transcript}`, "");
       setNoteContent(transcription);
     });
-    speechRecognition.start();
-
-    
+    speechRecognition.start();    
   }
 
   function handleStopRecording() {
-    speechRecognition?.stop();
-    setIsRecording(false);
+    stop();
   }
 
     return (
-        <ReactDialog.Root>
+        <ReactDialog.Root onOpenChange={handleOpenChange}>
           <ReactDialog.Trigger className="bg-slate-700 relative rounded-md p-5 gap-3
           flex flex-col
           text-left outline-none
@@ -146,14 +153,14 @@ export function NewNoteCard() {
                       <p>Gravando! (clique p/ interromper)</p>
                   </button>
                 ) : (
-                  <ReactDialog.Close className="bg-lime-400 text-lime-950
+                  <button className="bg-lime-400 text-lime-950
                 absolute w-full left-[0] right-[0] bottom-0
                 hover:bg-lime-500
                 px-16 py-4 text-sm/[14px] font-semibold"
                 type="button"
                 onClick={handleSaveNote}>
                     Salvar nota
-                </ReactDialog.Close>
+                </button>
                 )}
                 </form>
               </Dialog.Content>

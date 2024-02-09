@@ -4,6 +4,7 @@ import { ptBR } from "date-fns/locale";
 import { Dialog } from "./Dialog";
 import { PropsWithChildren, useContext } from "react";
 import { AppContext } from "../context/AppContext";
+import { toast } from "sonner";
 
 type Note = {
   id: string
@@ -19,6 +20,7 @@ export function NoteCard({ note: { id, createdDate, content }  } : NoteProps) {
   
     function handleDeleteTask() {
       deleteNote(id);
+      toast.success("Nota deleta com sucesso");
     }
     
     return (
