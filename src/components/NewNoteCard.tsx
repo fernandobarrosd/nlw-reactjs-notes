@@ -16,6 +16,11 @@ export function NewNoteCard() {
   
 
   function handleChange({ target : { value } }: ChangeEvent<HTMLTextAreaElement>) {
+    if (!value) {
+    	setOnBoardingIsVisible(true);
+	setIsRecording(false);
+
+    }
     setNoteContent(value);
   }
 
